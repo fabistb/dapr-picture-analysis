@@ -26,7 +26,11 @@ public class FileDao : IFileDao
             throw new ServiceInvocationException($"Service invocation failed with status code: {response.StatusCode}");
         }
 
-        var fileResponse = JsonSerializer.Deserialize<FileResponse>(await response.Content.ReadAsStringAsync());
+        var fileResponse = JsonSerializer.Deserialize<FileResponse>(await response.Content.ReadAsStringAsync(), 
+            new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
         return fileResponse;
     }

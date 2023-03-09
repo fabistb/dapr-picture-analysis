@@ -19,8 +19,8 @@ public class GatewayController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> ReceiveRequest([FromBody] GatewayRequest request)
     {
+        await _gatewayService.ProcessRequest(request);
         
-
         return Accepted();
     }
 }

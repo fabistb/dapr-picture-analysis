@@ -18,7 +18,7 @@ public class GatewayService : IGatewayService
     public async Task ProcessRequest(GatewayRequest request)
     {
         var lastPointIndex = request.FileName.LastIndexOf('.');
-        var fileType = request.FileName.Substring(lastPointIndex, request.FileName.Length - 1);
+        var fileType = request.FileName[(lastPointIndex + 1)..];
         
         var fileResponse = await _fileDao.Save(fileType, request.Base64);
 

@@ -46,7 +46,7 @@ public class FileService : IFileService
         };
 
         var blobResponse = await _daprClient.InvokeBindingAsync(bindingRequest);
-        var fileRequest = new FileRequest(await JsonSerializer.DeserializeAsync<string>(blobResponse.Data.AsStream()), null);
+        var fileRequest = new FileRequest(Convert.ToBase64String(blobResponse.Data.ToArray()), null);
 
         return fileRequest;
     }

@@ -12,3 +12,5 @@ spec:
       value: [Account key]
     - name: container
       value: file-entry
+    - name: decodeBase64
+      value: true

@@ -16,6 +16,9 @@ param containerAppEnvironmentName string
 @description('The log analytics workspace name')
 param logAnalyticsWorkspaceName string
 
+@description('The cognitiv service account name')
+param cognitiveServiceAccountName string
+
 @description('The resource location')
 param location string = resourceGroup().location
 
@@ -125,4 +128,19 @@ resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
       }
     }
   }  
+}
+
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+  name: cognitiveServiceAccountName
+  location: location
+  sku: {
+    name: 'F0'
+  }
+  properties: {
+    customSubDomainName: cognitiveServiceAccountName
+    networkAcls: {
+      defaultAction: 'Allow'
+    }
+    publicNetworkAccess: 'Enabled'
+  }
 }

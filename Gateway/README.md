@@ -24,3 +24,10 @@ Since the service utilizes _Man.Dapr.Sidekick.AspNetCore_ the appication can be 
 An exmaple request can be found in the _requests_ folder.
 
 ## Deployment
+
+### Create Docker Image
+To create a docker image for the service navigate to the _Gateway_ folder and run the following command:
+
+```bash
+ $ docker build -t gateway  .
+```

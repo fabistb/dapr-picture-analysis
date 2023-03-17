@@ -26,6 +26,9 @@ In the _lauchSettings.json_ set the COGNITIVE_SERVICE_URL_ to the url of your Az
 Since the service utilizes _Man.Dapr.Sidekick.AspNetCore_ the application can be debugged locally by starting the application in debug mode.
 
 ## Deployment
+To create a docker image for the service navigate to the _Computervision_ folder and run the following command:
 
-
+```bash
+$ docker build -t computervision .
+```
 

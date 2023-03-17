@@ -16,3 +16,8 @@ Since the service utilizes _Man.Dapr.Sidekick.AspNetCore_ the application can be
 Example requests can be found in the _requests_ folder.
 
 ## Deployment
+To create a docker image for the service navigate to the _FileService_ folder and run the following command:
+
+```bash
+ $ docker build -t fileservice  .
+```

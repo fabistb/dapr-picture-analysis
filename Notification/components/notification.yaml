@@ -1,0 +1,14 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: notification-storage
+spec:
+  type: bindings.azure.blobstorage
+  version: v1
+  metadata:
+    - name: accountName
+      value: [Account Name]
+    - name: accountKey
+      value: [Account Key]
+    - name: containerName
+      value: notifications

@@ -36,7 +36,7 @@ func notificationEventHandler(ctx context.Context, e *common.TopicEvent) (retry 
 	defer client.Close()
 
 	in := &dapr.InvokeBindingRequest{
-		Name:      "email-endpoint",
+		Name:      "notification-storage",
 		Operation: "create",
 		Data:      e.RawData,
 	}

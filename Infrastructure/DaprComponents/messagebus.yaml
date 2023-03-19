@@ -1,0 +1,9 @@
+componentType: pubsub.azure.servicebus.topics
+version: v1
+metadata:
+- name: connectionString
+  value: "[Connection String]"
+scopes:
+  - gateway
+  - computervision
+  - notification

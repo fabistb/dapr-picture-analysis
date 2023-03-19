@@ -1,0 +1,13 @@
+componentType: bindings.azure.blobstorage
+version: v1
+metadata:
+  - name: accountName
+    value: [Account Name]
+  - name: accountKey
+    value: [Account Key]
+  - name: containerName
+    value: file-entry
+  - name: decodeBase64
+    value: true
+scopes:
+  - file-service

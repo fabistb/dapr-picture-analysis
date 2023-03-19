@@ -45,7 +45,5 @@ func notificationEventHandler(ctx context.Context, e *common.TopicEvent) (retry 
 		panic(err)
 	}
 
-	log.Printf("event - PubsubName: %s, Topic: %s, ID: %s, Data: %s", e.PubsubName, e.Topic, e.ID, e.Data)
-
 	return false, nil
 }

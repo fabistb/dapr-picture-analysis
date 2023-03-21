@@ -7,9 +7,6 @@ param storageAccountName string
 @description('The azure service bus namespace name')
 param serviceBusNamespaceName string
 
-@description('The container app name')
-param containerAppName string
-
 @description('The container app environment')
 param containerAppEnvironmentName string
 
@@ -19,33 +16,19 @@ param logAnalyticsWorkspaceName string
 @description('The cognitiv service account name')
 param cognitiveServiceAccountName string
 
+@description('The key vault name')
+param keyVaultName string
+
+@description('The user managed identity name')
+param userManagedIdentityName string
+
 @description('The resource location')
 param location string = resourceGroup().location
 
-@description('Number of CPU cores the container can use. Can be with a maximum of two decimals.')
-@allowed([
-  '0.25'
-  '0.5'
-  '0.75'
-  '1'
-  '1.25'
-  '1.5'
-  '1.75'
-  '2'
-])
-param cpuCore string = '0.5'
-
-@description('Amount of memory (in gibibytes, GiB) allocated to the container up to 4GiB. Can be with a maximum of two decimals. Ratio with CPU cores must be equal to 2.')
-@allowed([
-  '0.5'
-  '1'
-  '1.5'
-  '2'
-  '3'
-  '3.5'
-  '4'
-])
-param memorySize string = '1'
+resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: userManagedIdentityName
+  location: location
+}
 
 resource acrResource 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' ={
   name: acrName
@@ -81,16 +64,27 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
+resource fileEntry 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+  name: '${storageAccountName}/default/file-entry'
+  properties: {
+    publicAccess: 'None'
+  }
+}
+
+resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+  name: '${storageAccountName}/default/notification-storage'
+  properties: {
+    publicAccess: 'None'
+  }
+}
+
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsWorkspaceName
   location: location
-  sku: {
-    name: 'PerGB2018'
-  }
   properties: {
     retentionInDays: 30
   }
-}
+} 
 
 resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
   name: containerAppEnvironmentName
@@ -109,38 +103,66 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' 
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2022-10-01' = {
-  name: containerAppName
-  location: location
-  properties: {
-    managedEnvironmentId: containerAppEnvironment.id
-    configuration: {
-      ingress: {
-        external: true
-        targetPort: 80
-        allowInsecure: false
-        traffic: [
-          {
-            latestRevision: true
-            weight: 100
-          }
-        ]
-      }
-    }
-  }  
-}
-
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   name: cognitiveServiceAccountName
   location: location
   sku: {
     name: 'F0'
   }
+  kind: 'ComputerVision'
   properties: {
     customSubDomainName: cognitiveServiceAccountName
     networkAcls: {
       defaultAction: 'Allow'
     }
     publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      name: 'standard'
+      family: 'A'
+    }
+    tenantId: subscription().tenantId
+    accessPolicies: [ 
+      {
+        tenantId: subscription().tenantId
+        objectId: userManagedIdentity.properties.principalId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+            'set'
+            'delete'
+            'recover'
+            'backup'
+            'restore'
+            'purge'
+          ]
+        }
+      }
+    ]
+    enableSoftDelete: false
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource blobStorageKeyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+  parent: keyVault
+  name: 'storage-connectionString'
+  properties: {
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+  }
+}
+
+resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
+  parent: keyVault
+  name: 'cognitive-service-key'
+  properties: {
+    value: cognitiveService.listKeys().key1
   }
 }

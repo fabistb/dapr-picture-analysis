@@ -69,6 +69,9 @@ resource fileEntry 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   properties: {
     publicAccess: 'None'
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
@@ -76,6 +79,9 @@ resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/con
   properties: {
     publicAccess: 'None'
   }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {

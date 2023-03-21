@@ -5,16 +5,16 @@ Dapr components contain all dapr related components to deploy to the Azure Conta
 
 ```bash
 az containerapp env dapr-component set \
-    --name dapr-picture-cae-001 \
-    --resource-group FabianDaprPictureAnalyse \
+    --name <container app environment> \
+    --resource-group <resource group> \
     --dapr-component-name file-entry-storage-binding \
     --yaml storage.yaml
 ```
 
 ```bash
 az containerapp env dapr-component set \
-    --name dapr-picture-cae-001 \
-    --resource-group FabianDaprPictureAnalyse \
+    --name <container app environment> \
+    --resource-group <resource group> \
     --dapr-component-name notification-storage \
     --yaml notificationstorage.yaml
 ```
@@ -23,8 +23,8 @@ az containerapp env dapr-component set \
 
 ```bash
 az containerapp env dapr-component set \
-    --name dapr-picture-cae-001 \
-    --resource-group FabianDaprPictureAnalyse \
+    --name <container app environment> \
+    --resource-group <resource group> \
     --dapr-component-name messagebus \
     --yaml messagebus.yaml
 ```
@@ -33,8 +33,8 @@ az containerapp env dapr-component set \
 
 ```bash
 az containerapp env dapr-component set \
-    --name dapr-picture-cae-001 \
-    --resource-group FabianDaprPictureAnalyse \
+    --name <container app environment> \
+    --resource-group <resource group> \
     --dapr-component-name secretstore \
     --yaml secretstore.yaml
 ```

@@ -11,4 +11,4 @@ spec:
     - name: accountKey
       value: [Account Key]
     - name: containerName
-      value: notifications
+      value: notification-storage

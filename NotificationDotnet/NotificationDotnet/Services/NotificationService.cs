@@ -18,9 +18,9 @@ public class NotificationService : INotificationService
     {
         var bindingRequest = new BindingRequest("notification-storage", "create")
         {
-            Data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)),
+            Data = JsonSerializer.SerializeToUtf8Bytes(message.Message)
         };
-
+        
         await _daprClient.InvokeBindingAsync(bindingRequest);
     }
 }

@@ -1,0 +1,6 @@
+POST http://localhost:3573/v1.0/publish/messagebus/notification-received
+Content-Type: application/json
+
+{
+  "message": "hello world!"
+}

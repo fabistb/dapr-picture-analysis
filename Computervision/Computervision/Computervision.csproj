@@ -7,10 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dapr.AspNetCore" Version="1.10.0" />
-        <PackageReference Include="Man.Dapr.Sidekick.AspNetCore" Version="1.2.1" />
+        <PackageReference Include="Dapr.AspNetCore" Version="1.13.1" />
+        <PackageReference Include="Man.Dapr.Sidekick.AspNetCore" Version="1.2.2" />
         <PackageReference Include="Microsoft.Azure.CognitiveServices.Vision.ComputerVision" Version="7.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
 </Project>

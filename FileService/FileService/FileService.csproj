@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.1.0" />
-        <PackageReference Include="Dapr.AspNetCore" Version="1.10.0" />
-        <PackageReference Include="Man.Dapr.Sidekick.AspNetCore" Version="1.2.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Asp.Versioning.Mvc" Version="6.4.1" />
+        <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
+        <PackageReference Include="Dapr.AspNetCore" Version="1.13.1" />
+        <PackageReference Include="Man.Dapr.Sidekick.AspNetCore" Version="1.2.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
 </Project>

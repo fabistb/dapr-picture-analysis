@@ -1,6 +1,6 @@
+using Asp.Versioning;
 using Gateway.Daos;
 using Gateway.Services;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 

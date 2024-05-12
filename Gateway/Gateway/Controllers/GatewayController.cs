@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Gateway.Models;
 using Gateway.Services;
 using Microsoft.AspNetCore.Mvc;

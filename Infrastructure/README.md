@@ -1,6 +1,8 @@
 # Infrastructure
-Run the following command to create the necessary azure ressources.
+The demo application supports two infrastructure setups.
 
-```bash
-az deployment group create --name <deployment Name> --resource-group <resource group> --template-file infrastructure.bicep --parameters @parameter.json
-```
+## Azure Container Apps
+The applications are hosted on Azure using _Azure Container Apps_.
+
+## Radius
+The application is hosted on a K3d if possible and _Radius_ is used.

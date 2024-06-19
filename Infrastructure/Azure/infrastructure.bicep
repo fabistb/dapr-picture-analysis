@@ -30,17 +30,6 @@ resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   location: location
 }
 
-resource acrResource 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' ={
-  name: acrName
-  location: location
-  sku: {
-    name: 'Standard'
-  }
-  properties: {
-    adminUserEnabled: true
-  }
-}
-
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
   name: serviceBusNamespaceName
   location: location

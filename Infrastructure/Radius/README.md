@@ -27,3 +27,33 @@ Install _Radius_ on the cluster.
 ```bash
 rad install kubernetes
 ```
+
+## Run Radius application
+Initialize the _Radius environment_ run:
+
+```bash
+rad init
+```
+
+Ensure that you don't setup a new app in the folder.
+
+```bash
+rad env update default --azure-subscription-id <azure subscription> --azure-resource-group  <azure resource group>
+```
+
+```bash
+az ad sp create-for-rbac -n DaprPictureAnalysis
+```
+
+```bash
+rad credential register azure --client-id myClientId  --client-secret myClientSecret  --tenant-id myTenantId
+```
+
+```bash
+az acr update --name myregistry --anonymous-pull-enabled
+```
+
+
+```bash
+rad run app.bicep --parameters @parameters.json
+```

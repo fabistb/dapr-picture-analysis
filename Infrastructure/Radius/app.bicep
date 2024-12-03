@@ -1,5 +1,5 @@
 // Import the set of Radius resources (Applications.*) into Bicep
-import radius as radius
+extension radius
 
 @description('Specifies the environment for resources')
 param environment string

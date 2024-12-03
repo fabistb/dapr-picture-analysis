@@ -16,12 +16,12 @@ resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/contai
   properties: {
     publicAccess: 'None'
   }
-}
+} 
 
-import kubernetes as k8s {
+extension kubernetes with {
   kubeConfig: ''
   namespace: context.runtime.kubernetes.namespace
-}
+} as kubernetes
 
 var daprType = 'bindings.azure.blobstorage'
 var daprVersion = 'v1'

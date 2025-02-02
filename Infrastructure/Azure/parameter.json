@@ -1,0 +1,27 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "storageAccountName": {
+        "value": "daprpicturesto001"
+      },
+      "serviceBusNamespaceName": {
+        "value": "dapr-picture-sb-001"
+      },
+      "containerAppEnvironmentName": {
+        "value": "dapr-picture-cae-001"
+      },
+      "logAnalyticsWorkspaceName": {
+        "value": "dapr-picture-law-001"
+      },
+      "cognitiveServiceAccountName": {
+        "value": "dapr-picture-csa-001"
+      },
+      "keyVaultName" :{
+        "value": "dapr-picture-kv-001"
+      },
+      "userManagedIdentityName": {
+        "value": "dapr-picture-umi-001"
+      }
+    }
+  }

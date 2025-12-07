@@ -16,7 +16,9 @@ var notificationSubscription = &common.Subscription{
 	Route:      "/notification",
 }
 
-// Global Dapr client to be reused across requests
+// Global Dapr client to be reused across requests.
+// The Dapr client is thread-safe and designed to be shared across goroutines.
+// This prevents resource exhaustion from creating clients per request.
 var daprClient dapr.Client
 
 func main() {

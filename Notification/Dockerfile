@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.20.2
+FROM golang:1.23-alpine AS builder
 
 # Set destination for COPY
 WORKDIR /app
@@ -16,6 +16,17 @@ COPY *.go ./
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o /notification
 
+# Use a minimal runtime image
+FROM alpine:latest
+
+# Install ca-certificates for HTTPS connections
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the binary from builder
+COPY --from=builder /notification .
+
 # To bind to a TCP port, runtime parameters must be supplied to the docker command.
 # But we can (optionally) document in the Dockerfile what ports
 # the application is going to listen on by default.
@@ -23,4 +34,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /notification
 EXPOSE 8080
 
 # Run
-CMD [ "/notification" ]
+CMD [ "./notification" ]

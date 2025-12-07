@@ -348,3 +348,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Go binaries
+Notification/Notification
+
+# Go test coverage
+*.out
+coverage.html

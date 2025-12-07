@@ -351,3 +351,7 @@ MigrationBackup/
 
 # Go binaries
 Notification/Notification
+
+# Go test coverage
+*.out
+coverage.html

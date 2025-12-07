@@ -21,6 +21,12 @@ var notificationSubscription = &common.Subscription{
 // This prevents resource exhaustion from creating clients per request.
 var daprClient dapr.Client
 
+// clientInvoker is a function type that allows dependency injection for testing
+type clientInvoker func(ctx context.Context, in *dapr.InvokeBindingRequest) error
+
+// currentInvoker is the function used to invoke bindings, can be overridden for testing
+var currentInvoker clientInvoker
+
 func main() {
 	// Initialize Dapr client once at startup
 	var err error
@@ -29,6 +35,11 @@ func main() {
 		log.Fatalf("error creating Dapr client: %v", err)
 	}
 	defer daprClient.Close()
+
+	// Set the default invoker to use the real client
+	currentInvoker = func(ctx context.Context, in *dapr.InvokeBindingRequest) error {
+		return daprClient.InvokeOutputBinding(ctx, in)
+	}
 
 	s := daprd.NewService(":8080")
 
@@ -48,7 +59,7 @@ func notificationEventHandler(ctx context.Context, e *common.TopicEvent) (retry 
 		Data:      e.RawData,
 	}
 
-	if err := daprClient.InvokeOutputBinding(ctx, in); err != nil {
+	if err := currentInvoker(ctx, in); err != nil {
 		log.Printf("error invoking output binding: %v", err)
 		return true, err
 	}

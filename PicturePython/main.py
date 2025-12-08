@@ -5,7 +5,7 @@ import json
 import os
 import base64
 from io import BytesIO
-from typing import List, Dict, Any
+from typing import List, Any
 
 from azure.cognitiveservices.vision.computervision import ComputerVisionClient
 from azure.cognitiveservices.vision.computervision.models import VisualFeatureTypes
@@ -16,6 +16,9 @@ from dapr.clients.grpc._response import TopicEventResponse
 from dapr.ext.grpc import App
 
 app = App()
+
+# Configuration constants
+CAT_DETECTION_CONFIDENCE_THRESHOLD = 0.5
 
 
 class FileDao:
@@ -100,7 +103,7 @@ class ComputervisionService:
                 break
         
         # Publish notification if cat detected with high confidence
-        if cat_category and cat_category.score > 0.5:
+        if cat_category and cat_category.score > CAT_DETECTION_CONFIDENCE_THRESHOLD:
             with DaprClient() as dapr_client:
                 notification_message = {
                     'message': 'The submitted picture probably contains a cat'

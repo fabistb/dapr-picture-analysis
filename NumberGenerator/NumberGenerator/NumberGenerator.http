@@ -1,0 +1,6 @@
+@NumberGenerator_HostAddress = http://localhost:5299
+
+GET {{NumberGenerator_HostAddress}}/api/v1.0/Number
+Accept: application/json
+
+###

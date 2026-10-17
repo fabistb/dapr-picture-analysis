@@ -1,11 +1,11 @@
 package main
 
 import (
-	"context"
-	dapr "github.com/dapr/go-sdk/client"
+	"errors"
 	"log"
 	"net/http"
 
+	dapr "github.com/dapr/go-sdk/client"
 	"github.com/dapr/go-sdk/service/common"
 	daprd "github.com/dapr/go-sdk/service/http"
 )
@@ -17,33 +17,23 @@ var notificationSubscription = &common.Subscription{
 }
 
 func main() {
-	s := daprd.NewService(":8080")
-
-	if err := s.AddTopicEventHandler(notificationSubscription, notificationEventHandler); err != nil {
-		log.Fatalf("error adding topic subscription: %v", err)
-	}
-
-	if err := s.Start(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("error listenning: %v", err)
-	}
-}
-
-func notificationEventHandler(ctx context.Context, e *common.TopicEvent) (retry bool, err error) {
+	// One client for the whole process. Creating and closing a client per
+	// event closed the shared gRPC connection and crashed the next event.
 	client, err := dapr.NewClient()
 	if err != nil {
-		panic(err)
+		log.Fatalf("error creating dapr client: %v", err)
 	}
 	defer client.Close()
 
-	in := &dapr.InvokeBindingRequest{
-		Name:      "notification-storage",
-		Operation: "create",
-		Data:      e.RawData,
+	handler := NewNotificationHandler(client)
+
+	s := daprd.NewService(":80")
+
+	if err := s.AddTopicEventHandler(notificationSubscription, handler.Handle); err != nil {
+		log.Fatalf("error adding topic subscription: %v", err)
 	}
 
-	if err := client.InvokeOutputBinding(ctx, in); err != nil {
-		panic(err)
+	if err := s.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalf("error listening: %v", err)
 	}
-
-	return false, nil
 }

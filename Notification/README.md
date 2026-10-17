@@ -1,10 +1,6 @@
 # Notification
 The _Notification_ service is responsible for sending notifications to the user.
 
-**Important:**
-The go implementation of the _Notification_ service currently has a problem processing multiple requests after another.
-This leads to panics when the application runs in the Azure Container App.
-
 ## Debugging
 The service can be easily debugged locally.
 
@@ -12,7 +8,12 @@ The service can be easily debugged locally.
 - Dapr installed locally
 
 ```
-$ dapr run --app-id notification --app-protocol http --app-port 8080 --dapr-http-port 3500 --dapr-grpc-port 50001 --components-path ./components
+$ dapr run --app-id notification --app-protocol http --app-port 80 --dapr-http-port 3500 --dapr-grpc-port 50001 --components-path ./components
+```
+
+## Tests
+```bash
+$ go test ./...
 ```
 
 ## Deployment
@@ -40,13 +41,13 @@ az containerapp create \
   --resource-group <resource group> \
   --environment <container app environment> \
   --image <container registry>/notification:latest \
-  --target-port 8080 \
+  --target-port 80 \
   --ingress 'internal' \
   --min-replicas 1 \
   --max-replicas 1 \
   --enable-dapr \
   --dapr-app-id notification \
-  --dapr-app-port 8080 \
+  --dapr-app-port 80 \
   --registry-server <container registry> \
   --user-assigned <managed identity>
   ```

@@ -1,13 +1,23 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /source
 
-COPY NotificationDotnet/*.csproj .
-RUN dotnet restore --use-current-runtime
+COPY global.json NotificationDotnet.sln ./
+COPY NotificationDotnet/*.csproj NotificationDotnet/
+COPY NotificationDotnet.UnitTests/*.csproj NotificationDotnet.UnitTests/
+RUN dotnet restore NotificationDotnet.sln --use-current-runtime
 
-COPY NotificationDotnet/. .
-RUN dotnet publish -c Release -o /app --use-current-runtime --self-contained false --no-restore
+COPY NotificationDotnet/. NotificationDotnet/
+COPY NotificationDotnet.UnitTests/. NotificationDotnet.UnitTests/
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+# Fail the image build if any unit test fails
+RUN dotnet test --solution NotificationDotnet.sln -c Release --no-restore
+
+RUN dotnet publish NotificationDotnet/NotificationDotnet.csproj -c Release -o /app --use-current-runtime --self-contained false --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+# .NET 8+ images listen on 8080 by default; keep port 80 to match the deployment config
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
 COPY --from=build /app .
 ENTRYPOINT [ "dotnet", "NotificationDotnet.dll" ]

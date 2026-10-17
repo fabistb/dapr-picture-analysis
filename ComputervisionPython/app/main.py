@@ -34,6 +34,11 @@ async def health() -> dict[str, str]:
     return {"status": "Healthy"}
 
 
-@dapr_app.subscribe(pubsub="messagebus", topic="message-received", route="/api/v1.0/computervision")
 async def process_image(event: CloudEvent, service: ServiceDep) -> None:
     await service.process_image(event.data.file_reference)
+
+
+# Subscribe on the same pub/sub component that is used for publishing notifications.
+dapr_app.subscribe(pubsub=get_settings().pubsub_name, topic="message-received", route="/api/v1.0/computervision")(
+    process_image
+)

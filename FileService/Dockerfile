@@ -16,5 +16,8 @@ RUN dotnet publish FileService/FileService.csproj -c Release -o /app --use-curre
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
+# .NET 8+ images listen on 8080 by default; keep port 80 to match the deployment config
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
 COPY --from=build /app .
 ENTRYPOINT [ "dotnet", "FileService.dll" ]

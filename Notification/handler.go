@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 
@@ -22,7 +23,7 @@ type BindingInvoker interface {
 
 // NotificationMessage is the payload of a notification-received event.
 type NotificationMessage struct {
-	Message string `json:"message"`
+	Message *string `json:"message"`
 }
 
 // NotificationHandler stores received notifications via the output binding.
@@ -42,8 +43,12 @@ func (h *NotificationHandler) Handle(ctx context.Context, e *common.TopicEvent) 
 		return false, fmt.Errorf("invalid notification payload: %w", err)
 	}
 
+	if msg.Message == nil {
+		return false, errors.New("invalid notification payload: message is missing")
+	}
+
 	// Same as the .NET service: the message text is stored as a JSON string.
-	data, err := json.Marshal(msg.Message)
+	data, err := json.Marshal(*msg.Message)
 	if err != nil {
 		return false, fmt.Errorf("error serializing message: %w", err)
 	}

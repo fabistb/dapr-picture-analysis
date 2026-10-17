@@ -103,3 +103,17 @@ func TestHandle_BindingError_Retries(t *testing.T) {
 		t.Fatalf("want (true, error), got (%v, %v)", retry, err)
 	}
 }
+
+func TestHandle_MissingMessage_DropsWithoutBinding(t *testing.T) {
+	fake := &fakeBinding{}
+	h := NewNotificationHandler(fake)
+
+	retry, err := h.Handle(context.Background(), &common.TopicEvent{RawData: []byte(`{}`)})
+
+	if err == nil || retry {
+		t.Fatalf("want (false, error), got (%v, %v)", retry, err)
+	}
+	if len(fake.calls) != 0 {
+		t.Errorf("binding must not be called")
+	}
+}

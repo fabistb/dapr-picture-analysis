@@ -11,6 +11,8 @@ namespace UniqueNumberGenerator.UnitTests.Services;
 [TestClass]
 public class UniqueNumberServiceTests
 {
+    private static readonly ActorId ExpectedActorId = new("unique-number-generator");
+
     private readonly Fixture _fixture = new();
     private MockRepository _mockRepository = null!;
     private Mock<IActorProxyFactory> _actorProxyFactory = null!;
@@ -34,7 +36,7 @@ public class UniqueNumberServiceTests
     {
         var number = _fixture.Create<long>();
         _actorProxyFactory
-            .Setup(f => f.CreateActorProxy<IUniqueNumberActor>(It.IsAny<ActorId>(), nameof(UniqueNumberActor), null))
+            .Setup(f => f.CreateActorProxy<IUniqueNumberActor>(ExpectedActorId, nameof(UniqueNumberActor), null))
             .Returns(_actor.Object);
         _actor.Setup(a => a.GetNextNumber()).ReturnsAsync(number);
 
@@ -45,18 +47,20 @@ public class UniqueNumberServiceTests
     }
 
     [TestMethod]
-    public async Task GetNextNumber_CalledTwice_AlwaysUsesSameActorId()
+    public async Task GetNextNumber_CalledTwice_AlwaysUsesUniqueNumberGeneratorActorId()
     {
-        var actorIds = new List<ActorId>();
         _actorProxyFactory
-            .Setup(f => f.CreateActorProxy<IUniqueNumberActor>(It.IsAny<ActorId>(), nameof(UniqueNumberActor), null))
-            .Callback<ActorId, string, ActorProxyOptions?>((id, _, _) => actorIds.Add(id))
+            .Setup(f => f.CreateActorProxy<IUniqueNumberActor>(ExpectedActorId, nameof(UniqueNumberActor), null))
             .Returns(_actor.Object);
-        _actor.Setup(a => a.GetNextNumber()).ReturnsAsync(1L);
+        _actor.SetupSequence(a => a.GetNextNumber()).ReturnsAsync(1L).ReturnsAsync(2L);
 
-        await _sut.GetNextNumber();
-        await _sut.GetNextNumber();
+        var first = await _sut.GetNextNumber();
+        var second = await _sut.GetNextNumber();
 
-        actorIds.Should().HaveCount(2).And.AllBeEquivalentTo(actorIds[0]);
+        first.Should().Be(1);
+        second.Should().Be(2);
+        _actorProxyFactory.Verify(
+            f => f.CreateActorProxy<IUniqueNumberActor>(ExpectedActorId, nameof(UniqueNumberActor), null),
+            Times.Exactly(2));
     }
 }

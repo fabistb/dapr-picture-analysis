@@ -17,8 +17,8 @@ public class UniqueNumberController : ControllerBase
         _uniqueNumberService = uniqueNumberService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get()
+    [HttpPost]
+    public async Task<IActionResult> Create()
     {
         var number = await _uniqueNumberService.GetNextNumber();
 

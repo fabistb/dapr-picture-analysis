@@ -28,12 +28,12 @@ public class UniqueNumberControllerTests
     public void Cleanup() => _mockRepository.VerifyAll();
 
     [TestMethod]
-    public async Task Get_ServiceReturnsNumber_ReturnsOkWithNumber()
+    public async Task Create_ServiceReturnsNumber_ReturnsOkWithNumber()
     {
         var number = _fixture.Create<long>();
         _uniqueNumberService.Setup(s => s.GetNextNumber()).ReturnsAsync(number);
 
-        var result = await _sut.Get();
+        var result = await _sut.Create();
 
         result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(new UniqueNumberResponse(number));
         _uniqueNumberService.Verify(s => s.GetNextNumber(), Times.Once);

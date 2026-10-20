@@ -14,7 +14,8 @@ public class UniqueNumberActor : Actor, IUniqueNumberActor
     {
         // Actor turns are single threaded, so read-increment-write is safe without locking.
         var current = await StateManager.GetOrAddStateAsync(StateName, 0L);
-        var next = current + 1;
+        // Throws OverflowException instead of wrapping around, which would hand out numbers twice.
+        var next = checked(current + 1);
         await StateManager.SetStateAsync(StateName, next);
 
         return next;

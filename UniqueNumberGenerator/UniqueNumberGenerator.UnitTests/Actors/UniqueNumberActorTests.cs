@@ -55,6 +55,17 @@ public class UniqueNumberActorTests
         _stateManager.Verify(s => s.SetStateAsync(UniqueNumberActor.StateName, 42L, It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [TestMethod]
+    public async Task GetNextNumber_StateAtMaxValue_ThrowsOverflowAndDoesNotWriteState()
+    {
+        _stateManager.Setup(s => s.GetOrAddStateAsync(UniqueNumberActor.StateName, 0L, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(long.MaxValue);
+
+        var act = () => _sut.GetNextNumber();
+
+        await act.Should().ThrowAsync<OverflowException>();
+    }
+
     // Actor.StateManager has an internal setter that the Dapr runtime uses; tests have to set it via reflection.
     private static void SetStateManager(Actor actor, IActorStateManager stateManager) =>
         typeof(Actor).GetProperty(nameof(Actor.StateManager))!.SetValue(actor, stateManager);

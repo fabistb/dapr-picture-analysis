@@ -5,7 +5,9 @@ The *Unique Number Generator* hands out unique, consecutive numbers. The number 
 ## Endpoint
 | Method | Route                     | Description                         |
 |--------|---------------------------|-------------------------------------|
-| GET    | `/api/v1.0/uniquenumber`  | Returns the next unique number      |
+| POST   | `/api/v1.0/uniquenumber`  | Allocates and returns the next unique number |
+
+The endpoint is a `POST` because every call allocates and persists a new number. Retried requests consume additional numbers, so the sequence is unique but not necessarily gap-free.
 
 Response:
 ```json

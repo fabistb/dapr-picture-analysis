@@ -22,6 +22,9 @@
       },
       "userManagedIdentityName": {
         "value": "dapr-picture-umi-001"
+      },
+      "cosmosDbAccountName": {
+        "value": "dapr-picture-cosmos-001"
       }
     }
   }

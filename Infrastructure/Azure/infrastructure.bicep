@@ -22,6 +22,15 @@ param keyVaultName string
 @description('The user managed identity name')
 param userManagedIdentityName string
 
+@description('The cosmos db account name')
+param cosmosDbAccountName string
+
+@description('The cosmos db database name used by the dapr state store')
+param cosmosDbDatabaseName string = 'daprstate'
+
+@description('The cosmos db container name used by the dapr state store')
+param cosmosDbContainerName string = 'statestore'
+
 @description('The resource location')
 param location string = resourceGroup().location
 
@@ -159,5 +168,99 @@ resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
   name: 'cognitive-service-key'
   properties: {
     value: cognitiveService.listKeys().key1
+  }
+}
+
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
+  name: cosmosDbAccountName
+  location: location
+  kind: 'GlobalDocumentDB'
+  properties: {
+    databaseAccountOfferType: 'Standard'
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'Strong'
+    }
+    locations: [
+      {
+        locationName: location
+        failoverPriority: 0
+        isZoneRedundant: false
+      }
+    ]
+  }
+}
+
+resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+  parent: cosmosDbAccount
+  name: cosmosDbDatabaseName
+  properties: {
+    resource: {
+      id: cosmosDbDatabaseName
+    }
+  }
+}
+
+// Dapr actor state store requires the partition key /partitionKey
+resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+  parent: cosmosDbDatabase
+  name: cosmosDbContainerName
+  properties: {
+    resource: {
+      id: cosmosDbContainerName
+      partitionKey: {
+        paths: [
+          '/partitionKey'
+        ]
+        kind: 'Hash'
+      }
+    }
+  }
+}
+
+module fileEntryBinding 'DaprComponents/storage.bicep' = {
+  name: 'daprFileEntryBinding'
+  params: {
+    containerAppEnvironmentName: containerAppEnvironment.name
+    storageAccountName: storageAccount.name
+  }
+}
+
+module notificationBinding 'DaprComponents/notificationstorage.bicep' = {
+  name: 'daprNotificationBinding'
+  params: {
+    containerAppEnvironmentName: containerAppEnvironment.name
+    storageAccountName: storageAccount.name
+  }
+}
+
+module messageBus 'DaprComponents/messagebus.bicep' = {
+  name: 'daprMessageBus'
+  params: {
+    containerAppEnvironmentName: containerAppEnvironment.name
+    serviceBusNamespaceName: serviceBusNamespace.name
+  }
+}
+
+module secretStore 'DaprComponents/secretstore.bicep' = {
+  name: 'daprSecretStore'
+  params: {
+    containerAppEnvironmentName: containerAppEnvironment.name
+    keyVaultName: keyVault.name
+    managedIdentityClientId: userManagedIdentity.properties.clientId
+  }
+}
+
+module stateStore 'DaprComponents/statestore.bicep' = {
+  name: 'daprStateStore'
+  params: {
+    containerAppEnvironmentName: containerAppEnvironment.name
+    cosmosDbAccountName: cosmosDbAccount.name
+    cosmosDbDatabase: cosmosDbDatabase.name
+    cosmosDbCollection: cosmosDbContainer.name
   }
 }

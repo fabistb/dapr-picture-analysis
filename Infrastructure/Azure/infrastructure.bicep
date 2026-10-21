@@ -177,6 +177,11 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   kind: 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: 'Standard'
+    capabilities: [
+      {
+        name: 'EnableServerless'
+      }
+    ]
     consistencyPolicy: {
       defaultConsistencyLevel: 'Strong'
     }

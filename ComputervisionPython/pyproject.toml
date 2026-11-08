@@ -4,9 +4,11 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "azure-cognitiveservices-vision-computervision>=0.9.1",
+    "certifi>=2026.10.18",
     "dapr>=1.18.3",
     "dapr-ext-fastapi>=1.18.3",
     "fastapi>=0.143.3",
+    "oauthlib>=4.0.1",
     "pydantic-settings>=2.16.0",
     "uvicorn[standard]>=0.54.0",
 ]

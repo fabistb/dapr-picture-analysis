@@ -155,14 +155,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource blobStorageKeyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
-  parent: keyVault
-  name: 'storage-connectionString'
-  properties: {
-    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
-  }
-}
-
 resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
   parent: keyVault
   name: 'cognitive-service-key'

@@ -222,11 +222,36 @@ resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/c
   }
 }
 
+module storageRoleAssignment 'RoleAssignments/storage.bicep' = {
+  name: 'storageRoleAssignment'
+  params: {
+    storageAccountName: storageAccount.name
+    principalId: userManagedIdentity.properties.principalId
+  }
+}
+
+module serviceBusRoleAssignment 'RoleAssignments/servicebus.bicep' = {
+  name: 'serviceBusRoleAssignment'
+  params: {
+    serviceBusNamespaceName: serviceBusNamespace.name
+    principalId: userManagedIdentity.properties.principalId
+  }
+}
+
+module cosmosDbRoleAssignment 'RoleAssignments/cosmosdb.bicep' = {
+  name: 'cosmosDbRoleAssignment'
+  params: {
+    cosmosDbAccountName: cosmosDbAccount.name
+    principalId: userManagedIdentity.properties.principalId
+  }
+}
+
 module fileEntryBinding 'DaprComponents/storage.bicep' = {
   name: 'daprFileEntryBinding'
   params: {
     containerAppEnvironmentName: containerAppEnvironment.name
     storageAccountName: storageAccount.name
+    managedIdentityClientId: userManagedIdentity.properties.clientId
   }
 }
 
@@ -235,6 +260,7 @@ module notificationBinding 'DaprComponents/notificationstorage.bicep' = {
   params: {
     containerAppEnvironmentName: containerAppEnvironment.name
     storageAccountName: storageAccount.name
+    managedIdentityClientId: userManagedIdentity.properties.clientId
   }
 }
 
@@ -243,6 +269,7 @@ module messageBus 'DaprComponents/messagebus.bicep' = {
   params: {
     containerAppEnvironmentName: containerAppEnvironment.name
     serviceBusNamespaceName: serviceBusNamespace.name
+    managedIdentityClientId: userManagedIdentity.properties.clientId
   }
 }
 
@@ -262,5 +289,6 @@ module stateStore 'DaprComponents/statestore.bicep' = {
     cosmosDbAccountName: cosmosDbAccount.name
     cosmosDbDatabase: cosmosDbDatabase.name
     cosmosDbCollection: cosmosDbContainer.name
+    managedIdentityClientId: userManagedIdentity.properties.clientId
   }
 }

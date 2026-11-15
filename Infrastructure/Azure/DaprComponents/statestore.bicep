@@ -18,26 +18,19 @@ param cosmosDbDatabase string
 @description('The Cosmos DB collection name')
 param cosmosDbCollection string
 
+@description('The client id of the user managed identity used to access the Azure resource')
+param managedIdentityClientId string
+
 resource stateStore 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01' = {
   parent: containerAppEnvironment
   name: 'statestore'
   properties: {
     componentType: 'state.azure.cosmosdb'
     version: 'v1'
-    secrets: [
-      {
-        name: 'cosmosdb-master-key'
-        value: cosmosDbAccount.listKeys().primaryMasterKey
-      }
-    ]
     metadata: [
       {
         name: 'url'
         value: cosmosDbAccount.properties.documentEndpoint
-      }
-      {
-        name: 'masterKey'
-        secretRef: 'cosmosdb-master-key'
       }
       {
         name: 'database'
@@ -50,6 +43,10 @@ resource stateStore 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01
       {
         name: 'actorStateStore'
         value: 'true'
+      }
+      {
+        name: 'azureClientId'
+        value: managedIdentityClientId
       }
     ]
   }

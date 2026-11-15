@@ -1,0 +1,28 @@
+namespace: DaprPicture.Dapr
+types:
+  blobBindings:
+    description: |
+      The DaprPicture.Dapr/blobBindings Resource Type deploys an Azure Blob Storage container
+      and a Dapr `bindings.azure.blobstorage` component that uses it.
+    apiVersions:
+      '2025-08-01-preview':
+        schema:
+          type: object
+          properties:
+            environment:
+              type: string
+              description: "(Required) The Radius Environment ID. Typically set by the rad CLI. Typically value should be `environment`."
+            application:
+              type: string
+              description: "(Optional) The Radius Application ID. `myApplication.id` for example."
+            storageAccountName:
+              type: string
+              description: "(Required) The name of the existing Azure storage account."
+            containerName:
+              type: string
+              description: "(Required) The blob container to create and to use in the Dapr binding."
+            componentName:
+              type: string
+              readOnly: true
+              description: "(Read Only) The name of the Dapr component. Use this value with the Dapr client."
+          required: [environment, storageAccountName, containerName]

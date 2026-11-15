@@ -4,7 +4,7 @@ param azureContainerRegistryName string
 @description('The location')
 param location string = resourceGroup().location
 
-resource acrResource 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' ={
+resource acrResource 'Microsoft.ContainerRegistry/registries@2025-11-01' ={
   name: azureContainerRegistryName
   location: location
   sku: {

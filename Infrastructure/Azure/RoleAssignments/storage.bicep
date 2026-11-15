@@ -1,7 +1,7 @@
 @description('The storage account name')
 param storageAccountName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-09-01' existing = {
   name: storageAccountName
 }
 

@@ -1,7 +1,7 @@
 @description('The service bus namespace name')
 param serviceBusNamespaceName string
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' existing = {
   name: serviceBusNamespaceName
 }
 

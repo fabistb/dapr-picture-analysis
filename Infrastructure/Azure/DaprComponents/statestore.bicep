@@ -1,14 +1,14 @@
 @description('The container app environment name')
 param containerAppEnvironmentName string
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-07-01' existing = {
   name: containerAppEnvironmentName
 }
 
 @description('The Cosmos DB account name')
 param cosmosDbAccountName string
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' existing = {
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: cosmosDbAccountName
 }
 
@@ -21,7 +21,7 @@ param cosmosDbCollection string
 @description('The client id of the user managed identity used to access the Azure resource')
 param managedIdentityClientId string
 
-resource stateStore 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01' = {
+resource stateStore 'Microsoft.App/managedEnvironments/daprComponents@2026-07-01' = {
   parent: containerAppEnvironment
   name: 'statestore'
   properties: {

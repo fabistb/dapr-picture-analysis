@@ -1,7 +1,7 @@
 @description('The Cosmos DB account name')
 param cosmosDbAccountName string
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' existing = {
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: cosmosDbAccountName
 }
 
@@ -11,7 +11,7 @@ param principalId string
 // Built-in Cosmos DB Data Contributor
 var cosmosDbDataContributor = '00000000-0000-0000-0000-000000000002'
 
-resource cosmosDbRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-11-15' = {
+resource cosmosDbRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2026-03-15' = {
   parent: cosmosDbAccount
   name: guid(cosmosDbAccount.id, principalId, cosmosDbDataContributor)
   properties: {

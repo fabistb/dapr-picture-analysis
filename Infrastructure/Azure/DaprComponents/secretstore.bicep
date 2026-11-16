@@ -1,7 +1,7 @@
 @description('The container app environment name')
 param containerAppEnvironmentName string
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' existing = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-07-01' existing = {
   name: containerAppEnvironmentName
 }
 
@@ -11,7 +11,7 @@ param keyVaultName string
 @description('The client id of the user managed identity used to access the key vault')
 param managedIdentityClientId string
 
-resource secretStore 'Microsoft.App/managedEnvironments/daprComponents@2023-05-01' = {
+resource secretStore 'Microsoft.App/managedEnvironments/daprComponents@2026-07-01' = {
   parent: containerAppEnvironment
   name: 'secretstore'
   properties: {

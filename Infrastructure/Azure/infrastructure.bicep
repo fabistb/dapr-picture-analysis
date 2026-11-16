@@ -34,12 +34,12 @@ param cosmosDbContainerName string = 'statestore'
 @description('The resource location')
 param location string = resourceGroup().location
 
-resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: userManagedIdentityName
   location: location
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' = {
   name: serviceBusNamespaceName
   location: location
   sku: {
@@ -48,7 +48,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
   properties:{}
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-09-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -62,7 +62,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-resource fileEntry 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource fileEntry 'Microsoft.Storage/storageAccounts/blobServices/containers@2026-09-01' = {
   name: '${storageAccountName}/default/file-entry'
   properties: {
     publicAccess: 'None'
@@ -72,7 +72,7 @@ resource fileEntry 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   ]
 }
 
-resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/containers@2026-09-01' = {
   name: '${storageAccountName}/default/notification-storage'
   properties: {
     publicAccess: 'None'
@@ -82,7 +82,7 @@ resource notificationStorage 'Microsoft.Storage/storageAccounts/blobServices/con
   ]
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2026-03-01' = {
   name: logAnalyticsWorkspaceName
   location: location
   properties: {
@@ -90,12 +90,9 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10
   }
 } 
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' = {
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2026-07-01' = {
   name: containerAppEnvironmentName
   location: location
-  sku: {
-    name: 'Consumption'
-  }
   properties: {
     appLogsConfiguration: {
       destination: 'log-analytics'
@@ -107,7 +104,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2022-10-01' 
   }
 }
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2026-09-01' = {
   name: cognitiveServiceAccountName
   location: location
   sku: {
@@ -123,7 +120,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' = {
   name: keyVaultName
   location: location
   properties: {
@@ -155,7 +152,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
+resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2026-05-15' = {
   parent: keyVault
   name: 'cognitive-service-key'
   properties: {
@@ -163,7 +160,7 @@ resource cognitivServiceKey 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
   }
 }
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' = {
   name: cosmosDbAccountName
   location: location
   kind: 'GlobalDocumentDB'
@@ -187,7 +184,7 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-11-15' = {
   }
 }
 
-resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-11-15' = {
+resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-03-15' = {
   parent: cosmosDbAccount
   name: cosmosDbDatabaseName
   properties: {
@@ -198,7 +195,7 @@ resource cosmosDbDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@20
 }
 
 // Dapr actor state store requires the partition key /partitionKey
-resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2023-11-15' = {
+resource cosmosDbContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15' = {
   parent: cosmosDbDatabase
   name: cosmosDbContainerName
   properties: {

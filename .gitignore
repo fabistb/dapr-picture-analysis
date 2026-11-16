@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Generated Radius Bicep extensions (rad bicep publish-extension)
+Infrastructure/Radius/extensions/

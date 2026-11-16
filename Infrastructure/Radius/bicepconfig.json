@@ -1,9 +1,7 @@
 {
-	"experimentalFeaturesEnabled": {
-		"extensibility": true
-	},
 	"extensions": {
-		"radius": "br:biceptypes.azurecr.io/radius:0.40",
-		"aws": "br:biceptypes.azurecr.io/aws:0.40"
+		"radius": "br:biceptypes.azurecr.io/radius:0.62",
+		"radiusDapr": "./extensions/radius-dapr.tgz",
+		"daprPicture": "./extensions/dapr-picture.tgz"
 	}
 }

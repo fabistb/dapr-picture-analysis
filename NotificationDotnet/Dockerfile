@@ -16,8 +16,6 @@ RUN dotnet publish NotificationDotnet/NotificationDotnet.csproj -c Release -o /a
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
-# .NET 8+ images listen on 8080 by default; keep port 80 to match the deployment config
-ENV ASPNETCORE_HTTP_PORTS=80
-EXPOSE 80
+EXPOSE 8080
 COPY --from=build /app .
 ENTRYPOINT [ "dotnet", "NotificationDotnet.dll" ]

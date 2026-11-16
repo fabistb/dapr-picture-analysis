@@ -8,7 +8,7 @@ The service can be easily debugged locally.
 - Dapr installed locally
 
 ```
-$ dapr run --app-id notification --app-protocol http --app-port 80 --dapr-http-port 3500 --dapr-grpc-port 50001 --components-path ./components
+$ dapr run --app-id notification --app-protocol http --app-port 8080 --dapr-http-port 3500 --dapr-grpc-port 50001 --components-path ./components
 ```
 
 ## Tests
@@ -41,13 +41,13 @@ az containerapp create \
   --resource-group <resource group> \
   --environment <container app environment> \
   --image <container registry>/notification:latest \
-  --target-port 80 \
+  --target-port 8080 \
   --ingress 'internal' \
   --min-replicas 1 \
   --max-replicas 1 \
   --enable-dapr \
   --dapr-app-id notification \
-  --dapr-app-port 80 \
+  --dapr-app-port 8080 \
   --registry-server <container registry> \
   --user-assigned <managed identity>
   ```

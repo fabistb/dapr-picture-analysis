@@ -27,7 +27,7 @@ func main() {
 
 	handler := NewNotificationHandler(client)
 
-	s := daprd.NewService(":80")
+	s := daprd.NewService(":8080")
 
 	if err := s.AddTopicEventHandler(notificationSubscription, handler.Handle); err != nil {
 		log.Fatalf("error adding topic subscription: %v", err)

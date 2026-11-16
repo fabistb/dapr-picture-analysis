@@ -24,12 +24,11 @@ FROM python:3.13-slim AS final
 
 WORKDIR /app
 
-# Runs as root like the other images: port 80 is privileged.
 COPY --from=build /app/.venv ./.venv
 COPY --from=build /app/app ./app
 
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]

@@ -225,7 +225,7 @@ resource gateway 'Radius.Compute/containers@2025-08-01-preview' = {
     extensions: {
       daprSidecar: {
         appId: 'gateway'
-        appPort: 80
+        appPort: 8080
       }
     }
   }
@@ -249,7 +249,7 @@ resource computervision 'Radius.Compute/containers@2025-08-01-preview' = {
     extensions: {
       daprSidecar: {
         appId: 'computervision'
-        appPort: 80
+        appPort: 8080
       }
     }
   }
@@ -268,7 +268,7 @@ resource fileService 'Radius.Compute/containers@2025-08-01-preview' = {
     extensions: {
       daprSidecar: {
         appId: 'file-service'
-        appPort: 80
+        appPort: 8080
       }
     }
   }
@@ -287,7 +287,7 @@ resource notification 'Radius.Compute/containers@2025-08-01-preview' = {
     extensions: {
       daprSidecar: {
         appId: 'notification'
-        appPort: 80
+        appPort: 8080
       }
     }
   }

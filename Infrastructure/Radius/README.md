@@ -85,6 +85,7 @@ The Bicep files import the types through the extensions in `extensions/` (see `b
 
 ```bash
 (cat /tmp/contrib/pubSubBrokers.yaml; echo; tail -n +3 /tmp/contrib/secretStores.yaml) > /tmp/contrib/radius-dapr.yaml
+mkdir -p extensions
 rad bicep publish-extension --from-file /tmp/contrib/radius-dapr.yaml --target extensions/radius-dapr.tgz --force
 rad bicep publish-extension --from-file types/blobBindings.yaml --target extensions/dapr-picture.tgz --force
 ```

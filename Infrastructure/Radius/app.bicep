@@ -140,10 +140,11 @@ resource daprPubSub 'Radius.Dapr/pubSubBrokers@2025-08-01-preview' = {
         }
       }
     }
-    // Dapr's built-in Kubernetes secret store, which holds dapr-credentials.
-    auth: {
-      secretStore: 'kubernetes'
-    }
+    scopes: [
+      'gateway'
+      'computervision'
+      'notification'
+    ]
   }
 }
 
@@ -197,6 +198,9 @@ resource secretStore 'Radius.Dapr/secretStores@2025-08-01-preview' = {
         }
       }
     }
+    scopes: [
+      'computervision'
+    ]
   }
 }
 

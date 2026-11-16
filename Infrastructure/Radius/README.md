@@ -110,11 +110,20 @@ rad env update default --recipe-packs default,dapr-picture
 
 ## Run Radius application
 
-The service principal values are passed on the command line, so the client secret never lands in `parameters.json`. Radius stores the Service Bus connection string and the client secret in the Kubernetes secret `dapr-credentials`, and the Dapr components reference it with `secretKeyRef`.
+Radius stores the Service Bus connection string and the client secret in the Kubernetes secret `dapr-credentials`, and the Dapr components reference it with `secretKeyRef`.
+
+The client secret is read without echo and handed to `rad deploy` as a single-value JSON file (`-p name=@file`), so it appears neither in the shell history nor in the process list. Only the owner can read the file, and it is deleted afterwards.
 
 ```bash
+read -rs AZ_CLIENT_SECRET
+SECRET_FILE=$(umask 077; mktemp)
+printf '"%s"' "$AZ_CLIENT_SECRET" > "$SECRET_FILE"
+unset AZ_CLIENT_SECRET
+
 rad deploy app.bicep --parameters @parameters.json \
   --parameters azureClientId=<appId> \
   --parameters azureClientObjectId=<objectId> \
-  --parameters azureClientSecret=<password>
+  --parameters azureClientSecret=@"$SECRET_FILE"
+
+rm -f "$SECRET_FILE"
 ```

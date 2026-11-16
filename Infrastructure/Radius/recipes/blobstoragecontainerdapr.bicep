@@ -3,6 +3,7 @@ param context object
 
 var storageAccountName = context.resource.properties.storageAccountName
 var containerName = context.resource.properties.containerName
+var namespace = context.runtime.kubernetes.namespace
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2026-09-01' existing = {
   name: storageAccountName
@@ -17,7 +18,7 @@ resource storageContainer 'Microsoft.Storage/storageAccounts/blobServices/contai
 
 extension kubernetes with {
   kubeConfig: ''
-  namespace: context.runtime.kubernetes.namespace
+  namespace: namespace
 } as kubernetes
 
 var daprType = 'bindings.azure.blobstorage'
@@ -27,6 +28,7 @@ var daprVersion = 'v1'
 resource daprComponent 'dapr.io/Component@v1alpha1' = {
   metadata: {
     name: context.resource.name
+    namespace: namespace
   }
   spec: {
     type: daprType 
@@ -53,7 +55,7 @@ output result object = {
   // This allows Kubernetes resources to be cleaned up when the resource is deleted.
   // Once this gap is addressed, users won't need to do this.
   resources: [
-    '/planes/kubernetes/local/namespaces/${daprComponent.metadata.namespace}/providers/dapr.io/Component/${daprComponent.metadata.name}'
+    '/planes/kubernetes/local/namespaces/${namespace}/providers/dapr.io/Component/${daprComponent.metadata.name}'
   ]
   values: {
     componentName: daprComponent.metadata.name

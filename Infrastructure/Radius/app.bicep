@@ -31,10 +31,6 @@ param azureClientObjectId string
 @description('The client secret of the same service principal')
 param azureClientSecret string
 
-var defaultSASKeyName = 'RootManageSharedAccessKey'
-var sbVersion = '2026-01-01'
-var defaultAuthRulesResourceId = resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', servicebusNamespaceName, defaultSASKeyName)
-
 resource application 'Radius.Core/applications@2025-08-01-preview' = {
   name: 'dapr-picture-analysis'
   properties: {
@@ -100,6 +96,12 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' = {
   }
 }
 
+// Azure creates this rule with the namespace; the parent reference orders listKeys after the namespace.
+resource serviceBusRootRule 'Microsoft.ServiceBus/namespaces/authorizationRules@2026-01-01' existing = {
+  parent: serviceBusNamespace
+  name: 'RootManageSharedAccessKey'
+}
+
 // Becomes a Kubernetes secret of the same name; Dapr resolves secretKeyRef from it through its default Kubernetes secret store.
 resource daprCredentials 'Radius.Security/secrets@2025-08-01-preview' = {
   name: 'dapr-credentials'
@@ -108,7 +110,7 @@ resource daprCredentials 'Radius.Security/secrets@2025-08-01-preview' = {
     application: application.id
     data: {
       servicebusConnectionString: {
-        value: listkeys(defaultAuthRulesResourceId, sbVersion).primaryConnectionString
+        value: serviceBusRootRule.listKeys().primaryConnectionString
       }
       azureClientSecret: {
         value: azureClientSecret

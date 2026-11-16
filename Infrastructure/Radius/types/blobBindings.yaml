@@ -21,6 +21,11 @@ types:
             containerName:
               type: string
               description: "(Required) The blob container to create and to use in the Dapr binding."
+            scopes:
+              type: array
+              description: "(Optional) The Dapr app IDs that can use this binding. Set each value to the `daprSidecar.appId` of a consumer container. If not set, every Dapr app in the namespace can use the binding."
+              items:
+                type: string
             componentName:
               type: string
               readOnly: true

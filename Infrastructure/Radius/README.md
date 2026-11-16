@@ -81,7 +81,7 @@ rad resource-type create --from-file /tmp/contrib/secretStores.yaml
 rad resource-type create --from-file types/blobBindings.yaml
 ```
 
-The Bicep files import the types through the extensions in `extensions/` (see `bicepconfig.json`). Regenerate them when a type changes. Both Dapr types share one namespace, so they are merged into one file first.
+The Bicep files import the types through the extensions in `extensions/` (see `bicepconfig.json`). The folder is not committed, so generate it before the first build or deploy, and again when a type changes. Both Dapr types share one namespace, so they are merged into one file first.
 
 ```bash
 (cat /tmp/contrib/pubSubBrokers.yaml; echo; tail -n +3 /tmp/contrib/secretStores.yaml) > /tmp/contrib/radius-dapr.yaml
@@ -117,7 +117,8 @@ The client secret is read without echo and handed to `rad deploy` as a single-va
 ```bash
 read -rs AZ_CLIENT_SECRET
 SECRET_FILE=$(umask 077; mktemp)
-printf '"%s"' "$AZ_CLIENT_SECRET" > "$SECRET_FILE"
+trap 'rm -f "$SECRET_FILE"' EXIT INT TERM
+printf '%s' "$AZ_CLIENT_SECRET" | python3 -c 'import json, sys; print(json.dumps(sys.stdin.read()))' > "$SECRET_FILE"
 unset AZ_CLIENT_SECRET
 
 rad deploy app.bicep --parameters @parameters.json \
@@ -125,5 +126,7 @@ rad deploy app.bicep --parameters @parameters.json \
   --parameters azureClientObjectId=<objectId> \
   --parameters azureClientSecret=@"$SECRET_FILE"
 
-rm -f "$SECRET_FILE"
+rm -f "$SECRET_FILE"; trap - EXIT INT TERM
 ```
+
+The trap removes the file even if `rad deploy` fails or the shell is interrupted. `python3` encodes the secret as a JSON string, so quotes, backslashes or control characters in it stay intact.

@@ -48,6 +48,7 @@ resource daprComponent 'dapr.io/Component@v1alpha1' = {
       }
     ]
   }
+  scopes: context.resource.properties.?scopes ?? []
 }
 
 output result object = {

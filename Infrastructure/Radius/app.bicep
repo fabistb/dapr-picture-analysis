@@ -59,6 +59,9 @@ resource fileEntryContainer 'DaprPicture.Dapr/blobBindings@2025-08-01-preview' =
     application: application.id
     storageAccountName: storageAccount.name
     containerName: 'file-entry'
+    scopes: [
+      'file-service'
+    ]
   }
 } 
 
@@ -69,6 +72,9 @@ resource notificationContainer 'DaprPicture.Dapr/blobBindings@2025-08-01-preview
     application: application.id
     storageAccountName: storageAccount.name
     containerName: 'notification-storage'
+    scopes: [
+      'notification'
+    ]
   }
 }
 
@@ -133,6 +139,10 @@ resource daprPubSub 'Radius.Dapr/pubSubBrokers@2025-08-01-preview' = {
           key: 'servicebusConnectionString'
         }
       }
+    }
+    // Dapr's built-in Kubernetes secret store, which holds dapr-credentials.
+    auth: {
+      secretStore: 'kubernetes'
     }
   }
 }

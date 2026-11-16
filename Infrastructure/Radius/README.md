@@ -52,6 +52,12 @@ rad env update default --azure-subscription-id <azure subscription> --azure-reso
 az ad sp create-for-rbac -n DaprPictureAnalysis
 ```
 
+The same service principal is used by the Dapr secret store to read the key vault, because a K3d cluster has no Azure workload identity. Note its `appId` (client ID), `password` (client secret) and look up its object ID:
+
+```bash
+az ad sp show --id <appId> --query id -o tsv
+```
+
 ```bash
 rad credential register azure sp --client-id myClientId  --client-secret myClientSecret  --tenant-id myTenantId
 ```
@@ -104,6 +110,11 @@ rad env update default --recipe-packs default,dapr-picture
 
 ## Run Radius application
 
+The service principal values are passed on the command line, so the client secret never lands in `parameters.json`. Radius stores the Service Bus connection string and the client secret in the Kubernetes secret `dapr-credentials`, and the Dapr components reference it with `secretKeyRef`.
+
 ```bash
-rad deploy app.bicep --parameters @parameters.json
+rad deploy app.bicep --parameters @parameters.json \
+  --parameters azureClientId=<appId> \
+  --parameters azureClientObjectId=<objectId> \
+  --parameters azureClientSecret=<password>
 ```

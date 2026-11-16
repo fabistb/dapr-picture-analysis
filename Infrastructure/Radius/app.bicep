@@ -21,6 +21,16 @@ param servicebusNamespaceName string
 @description('The key vault name')
 param keyVaultName string
 
+@description('The client ID of the service principal the Dapr secret store uses to read the key vault')
+param azureClientId string
+
+@description('The object ID of the same service principal')
+param azureClientObjectId string
+
+@secure()
+@description('The client secret of the same service principal')
+param azureClientSecret string
+
 var defaultSASKeyName = 'RootManageSharedAccessKey'
 var sbVersion = '2026-01-01'
 var defaultAuthRulesResourceId = resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', servicebusNamespaceName, defaultSASKeyName)
@@ -90,6 +100,23 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2026-01-01' = {
   }
 }
 
+// Becomes a Kubernetes secret of the same name; Dapr resolves secretKeyRef from it through its default Kubernetes secret store.
+resource daprCredentials 'Radius.Security/secrets@2025-08-01-preview' = {
+  name: 'dapr-credentials'
+  properties: {
+    environment: environment
+    application: application.id
+    data: {
+      servicebusConnectionString: {
+        value: listkeys(defaultAuthRulesResourceId, sbVersion).primaryConnectionString
+      }
+      azureClientSecret: {
+        value: azureClientSecret
+      }
+    }
+  }
+}
+
 resource daprPubSub 'Radius.Dapr/pubSubBrokers@2025-08-01-preview' = {
   name: 'messagebus'
   properties: {
@@ -99,7 +126,10 @@ resource daprPubSub 'Radius.Dapr/pubSubBrokers@2025-08-01-preview' = {
     version: 'v1'
     metadata: {
       connectionString: {
-        value: listkeys(defaultAuthRulesResourceId, sbVersion).primaryConnectionString
+        secretKeyRef: {
+          name: daprCredentials.name
+          key: 'servicebusConnectionString'
+        }
       }
     }
   }
@@ -117,7 +147,16 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-05-15' = {
     enableSoftDelete: false
     publicNetworkAccess: 'Enabled'
     accessPolicies: [
-      
+      {
+        tenantId: subscription().tenantId
+        objectId: azureClientObjectId
+        permissions: {
+          secrets: [
+            'get'
+            'list'
+          ]
+        }
+      }
     ]
   }
 }
@@ -134,13 +173,16 @@ resource secretStore 'Radius.Dapr/secretStores@2025-08-01-preview' = {
         value: keyVault.name
       }
       azureTenantId: {
-        value: ''
+        value: subscription().tenantId
       }
       azureClientId: {
-        value: ''
+        value: azureClientId
       }
       azureClientSecret: {
-        value: ''
+        secretKeyRef: {
+          name: daprCredentials.name
+          key: 'azureClientSecret'
+        }
       }
     }
   }

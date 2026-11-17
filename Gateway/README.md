@@ -50,13 +50,13 @@ az containerapp create \
   --resource-group <resource group> \
   --environment <container app environment> \
   --image <container registry>/gateway:latest \
-  --target-port 80 \
+  --target-port 8080 \
   --ingress 'external' \
   --min-replicas 1 \
   --max-replicas 1 \
   --enable-dapr \
   --dapr-app-id gateway \
-  --dapr-app-port 80 \
+  --dapr-app-port 8080 \
   --registry-server <container registry> \
   --user-assigned <managed identity>
 ```

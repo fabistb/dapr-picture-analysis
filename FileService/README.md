@@ -40,13 +40,13 @@ az containerapp create \
   --resource-group <resource group> \
   --environment dapr-picture-cae-001 \
   --image <container registry>/fileservice:latest \
-  --target-port 80 \
+  --target-port 8080 \
   --ingress 'internal' \
   --min-replicas 1 \
   --max-replicas 1 \
   --enable-dapr \
   --dapr-app-id file-service \
-  --dapr-app-port 80 \
+  --dapr-app-port 8080 \
   --registry-server <container registry> \
   --user-assigned <managed identity>
 ```

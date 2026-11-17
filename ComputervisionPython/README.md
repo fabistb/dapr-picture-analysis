@@ -28,4 +28,4 @@ To create a docker image (runs the unit tests during the build) navigate to the 
 $ docker build --platform amd64 -t computervisionpython .
 ```
 
-The container app settings are the same as for _Computervision_ (target port 80, `COGNITIVE_SERVICE_URL`, dapr app id/port).
+The container app settings are the same as for _Computervision_ (target port 8080, `COGNITIVE_SERVICE_URL`, dapr app id/port).
